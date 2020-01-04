@@ -18,6 +18,10 @@ class GroupController(
     @GetMapping("/api/groups")
     fun getGroups(): List<GroupDto> = groupsRepository.findAll().map(Groups::toDto)
 
+    @GetMapping("/api/groups/mine")
+    fun getUserGroups(@RequestAttribute("user_id") id: Long): List<GroupDto>
+            = groupsRepository.findAllByUsers_Id(User(id)).map(Groups::toDto)
+
     @PostMapping("/api/group")
     fun createGroup(@RequestAttribute("user_id") userId: Long,
                     @RequestBody group: CreateGroupRequest
@@ -27,7 +31,6 @@ class GroupController(
         var groupDomain = group.toDomain(mutableSetOf(user))
 
         groupDomain = groupsRepository.saveAndFlush(groupDomain)
-   //     userRepository.saveAndFlush(user)
 
         return GroupCreatedResponse(groupDomain.id!!)
     }
