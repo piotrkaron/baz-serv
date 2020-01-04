@@ -56,6 +56,10 @@ class Token(
         ", userId=$userId" +
         "}"
 
+    fun isExpired(): Boolean {
+        return LocalDateTime.now().isAfter(expiryDate)
+    }
+
 
     companion object {
         private const val serialVersionUID = 1L

@@ -5,16 +5,37 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
 
-class RequestException(val msg: String) : RuntimeException(msg)
+open class RequestException(val msg: String) : RuntimeException(msg)
+
+class NotFoundException(val msg: String?): RuntimeException(msg)
+
+class UnauthorizedException(msg: String? = null)
+    : RequestException(
+        if(msg == null){
+            "Brak autoryzacji"
+        }else{
+            "Brak autoryzacji: $msg"
+        }
+    )
 
 @ControllerAdvice
 class ErrorCatcher {
 
     @ExceptionHandler
-    fun catchError(ex: RequestException) = ResponseEntity(Error(ex.msg), HttpStatus.BAD_REQUEST)
+    fun unauthorized(ex: UnauthorizedException) = error(ex.msg, HttpStatus.UNAUTHORIZED)
 
     @ExceptionHandler
-    fun catchError(ex: RuntimeException) = ResponseEntity(Error(ex.message ?: ""), HttpStatus.INTERNAL_SERVER_ERROR)
+    fun catchError(ex: RequestException) = error(ex.msg, HttpStatus.BAD_REQUEST)
+
+    @ExceptionHandler
+    fun catchError(ex: RuntimeException) = error(ex.message, HttpStatus.INTERNAL_SERVER_ERROR)
+
+    @ExceptionHandler
+    fun catchError(ex: NotFoundException) = error(ex.msg
+            , HttpStatus.NOT_FOUND)
+
+    private fun error(msg: String?, status: HttpStatus)
+            = ResponseEntity(Error(msg ?: ""), status)
 }
 
 data class Error(

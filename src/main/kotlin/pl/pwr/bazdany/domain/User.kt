@@ -46,7 +46,7 @@ class User(
                 inverseJoinColumns = [JoinColumn(name = "group_id", referencedColumnName = "id")])
         var groups: MutableSet<Groups> = mutableSetOf(),
 
-        @OneToMany(mappedBy = "userId")
+        @OneToMany(mappedBy = "user")
         var trainings: MutableList<Training> = mutableListOf()
 
 ) : Serializable {

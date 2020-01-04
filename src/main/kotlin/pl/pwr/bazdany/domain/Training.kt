@@ -1,6 +1,7 @@
 package pl.pwr.bazdany.domain
 
 import java.io.Serializable
+import java.time.LocalDateTime
 import javax.persistence.*
 import javax.validation.constraints.NotNull
 
@@ -23,17 +24,15 @@ class Training(
         var filePath: String? = null,
 
         @Column(name = "date", columnDefinition = "timestamp default current_timestamp() not null on update current_timestamp()")
-        var date: Long? = null,
+        var date: LocalDateTime? = null,
 
         @OneToOne
-        @field:NotNull
-        @JoinColumn(unique = true, name = "type_id", referencedColumnName = "ID")
+        @JoinColumn(name = "type_id", referencedColumnName = "ID")
         var typeId: Types? = null,
 
         @ManyToOne
-        @field:NotNull
         @JoinColumn(name ="user_id", referencedColumnName = "ID")
-        var userId: User? = null
+        var user: User? = null
 
 ) : Serializable {
 
@@ -49,7 +48,7 @@ class Training(
 
     override fun toString() = "Training{" +
             "id=$id" +
-            ", userId=$userId" +
+            ", userId=$user" +
             ", typeId=$typeId" +
             ", duration=$duration" +
             ", filePath='$filePath'" +

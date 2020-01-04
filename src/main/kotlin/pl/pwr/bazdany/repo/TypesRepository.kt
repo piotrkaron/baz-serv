@@ -9,4 +9,5 @@ import org.springframework.stereotype.Repository
 @Suppress("unused")
 @Repository
 interface TypesRepository : JpaRepository<Types, Long> {
+    fun findByName(type: String?): Types?
 }
