@@ -16,14 +16,18 @@ import java.util.Optional
 interface UserRepository : JpaRepository<User, Long> {
 
     @Query(
-        value = "select distinct user2 from User user2 left join fetch user2.groups",
-        countQuery = "select count(distinct user2) from User user2"
+        value = "select distinct user from User user left join fetch user.groups",
+        countQuery = "select count(distinct user) from User user"
     )
     fun findAllWithEagerRelationships(pageable: Pageable): Page<User>
 
-    @Query(value = "select distinct user2 from User user2 left join fetch user2.groups")
+    @Query(value = "select distinct user from User user left join fetch user.groups")
     fun findAllWithEagerRelationships(): MutableList<User>
 
-    @Query("select user2 from User user2 left join fetch user2.groups where user2.id =:id")
+    @Query("select user from User user left join fetch user.groups where user.id =:id")
     fun findOneWithEagerRelationships(@Param("id") id: Long): Optional<User>
+
+   // @Query("select user from User user where user.email =:email")
+    fun findByEmail(@Param("email") email: String): User?
+
 }

@@ -29,9 +29,19 @@ repositories {
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-web")
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+    //implementation ("org.springframework.boot:spring-boot-starter-security")
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
+    implementation ("com.fasterxml.jackson.datatype:jackson-datatype-hppc")
+    implementation ("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
+    implementation ("com.fasterxml.jackson.core:jackson-annotations")
+    implementation ("com.fasterxml.jackson.core:jackson-databind")
+    implementation ("com.fasterxml.jackson.module:jackson-module-afterburner")
+    implementation ("com.fasterxml.jackson.module:jackson-module-kotlin:2.10.+")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+    implementation ("org.mapstruct:mapstruct:1.3.1.Final")
+    annotationProcessor ("org.mapstruct:mapstruct-processor:1.3.1.Final")
+
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
     testImplementation("org.springframework.boot:spring-boot-starter-test") {

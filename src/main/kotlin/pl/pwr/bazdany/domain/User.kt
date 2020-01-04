@@ -10,7 +10,7 @@ import javax.validation.constraints.NotNull
 class User(
 
         @Id
-        @GeneratedValue(strategy = GenerationType.AUTO)
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
         @Column(name = "ID")
         var id: Long? = null,
 
@@ -40,17 +40,15 @@ class User(
         @Column(name = "height")
         var height: Int? = null,
 
-/*
-        @OneToOne
-        //@JoinColumn(unique = true, name = "token_id", referencedColumnName = "ID")
-        var token: Token? = null,
-*/
-
         @ManyToMany
         @JoinTable(name = "usergroupmap",
                 joinColumns = [JoinColumn(name = "user_id", referencedColumnName = "id")],
                 inverseJoinColumns = [JoinColumn(name = "group_id", referencedColumnName = "id")])
         var groups: MutableSet<Groups> = mutableSetOf(),
+
+        @OneToOne
+        @JoinColumn(name = "token_id")
+        var token: Token? = null,
 
         @OneToMany(mappedBy = "userId")
         var trainings: MutableList<Training> = mutableListOf()
@@ -77,7 +75,7 @@ class User(
 
     override fun hashCode() = 31
 
-    override fun toString() = "User2{" +
+    override fun toString() = "User{" +
             "id=$id" +
             ", email='$email'" +
             ", password='$password'" +

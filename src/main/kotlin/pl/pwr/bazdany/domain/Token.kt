@@ -23,7 +23,6 @@ class Token(
     var dateCreated: Long? = null,
 
     @Column(name = "expiry_date")
-    @field:NotNull
     var expiryDate: Long? = null,
 
     @OneToOne
