@@ -18,11 +18,11 @@ class Types(
     @GeneratedValue(strategy = GenerationType.AUTO)
     var id: Long? = null,
 
-    @Column(name = "name", unique = true)
+    @Column(name = "name", unique = true, nullable = false)
     @field:NotNull
     var name: String? = null,
 
-    @Column(name = "calories_per_unit")
+    @Column(name = "calories_per_unit", nullable = false)
     @field:NotNull
     var caloriesPerUnit: Double? = null
 

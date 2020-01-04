@@ -13,5 +13,5 @@ import javax.validation.constraints.NotNull
 interface TokenRepository : JpaRepository<Token, Long> {
     fun findByUserId(user: User): Token?
 
-    fun deleteByUserId(user: User)
+    fun deleteAllByUserId(user: User)
 }

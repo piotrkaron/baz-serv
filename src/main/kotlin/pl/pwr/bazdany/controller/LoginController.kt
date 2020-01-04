@@ -25,7 +25,9 @@ class LoginController(
         if(encPwd != user.password)
             throw RequestException("Błędne dane")
 
-       // val existToken = tokenRepository.deleteByUser(user)
+/*        user.token?.let {
+            tokenRepository.delete(it)
+        }*/
 
         val token = Token(
                 token = UUID.randomUUID().toString(),

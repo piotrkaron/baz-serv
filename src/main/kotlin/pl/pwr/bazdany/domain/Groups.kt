@@ -11,10 +11,11 @@ import javax.persistence.ManyToMany
 import javax.persistence.Table
 
 import java.io.Serializable
+import java.time.LocalDateTime
 import javax.validation.constraints.NotNull
 
 @Entity
-@Table(name = "groups")
+@Table(name = "training_groups")
 class Groups(
 
     @Id
@@ -22,14 +23,15 @@ class Groups(
     @Column(name = "ID")
     var id: Long? = null,
 
-    @Column(name = "name", unique = true)
+    @Column(name = "name", unique = true, nullable = false)
     @field:NotNull
     var name: String? = null,
 
-    @Column(name = "date_created")
-    var dateCreated: Long? = null,
+    @Column(name = "date_created",
+            columnDefinition = "timestamp default current_timestamp() null")
+    var dateCreated: LocalDateTime? = null,
 
-    @Column(name = "city")
+    @Column(name = "city", nullable = false)
     @field:NotNull
     var city: String? = null,
 

@@ -11,8 +11,12 @@ class RequestException(val msg: String) : RuntimeException(msg)
 class ErrorCatcher {
 
     @ExceptionHandler
-    fun catchError(ex: RequestException) = ResponseEntity<String>(ex.msg, HttpStatus.BAD_REQUEST)
+    fun catchError(ex: RequestException) = ResponseEntity(Error(ex.msg), HttpStatus.BAD_REQUEST)
 
     @ExceptionHandler
-    fun catchError(ex: RuntimeException) = ResponseEntity(ex.message ?: "", HttpStatus.INTERNAL_SERVER_ERROR)
+    fun catchError(ex: RuntimeException) = ResponseEntity(Error(ex.message ?: ""), HttpStatus.INTERNAL_SERVER_ERROR)
 }
+
+data class Error(
+    val error: String?
+)

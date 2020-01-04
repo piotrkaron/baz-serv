@@ -14,30 +14,30 @@ class User(
         @Column(name = "ID")
         var id: Long? = null,
 
-        @Column(name = "email", unique = true)
+        @Column(name = "email", unique = true, nullable = false)
         @field:NotNull
         var email: String? = null,
 
-        @Column(name = "password")
+        @Column(name = "password", nullable = false)
         @field:NotNull
         var password: String? = null,
 
-        @Column(name = "name")
+        @Column(name = "name", nullable = false)
         @field:NotNull
         var name: String? = null,
 
-        @Column(name = "surname")
+        @Column(name = "surname", nullable = false)
         @field:NotNull
         var surname: String? = null,
 
-        @Column(name = "birth_date")
+        @Column(name = "birth_date", nullable = false)
         @field:NotNull
         var birthDate: LocalDate? = null,
 
-        @Column(name = "weight")
+        @Column(name = "weight", columnDefinition = "tinyint unsigned")
         var weight: Int? = null,
 
-        @Column(name = "height")
+        @Column(name = "height", columnDefinition = "tinyint unsigned")
         var height: Int? = null,
 
         @ManyToMany
@@ -45,10 +45,6 @@ class User(
                 joinColumns = [JoinColumn(name = "user_id", referencedColumnName = "id")],
                 inverseJoinColumns = [JoinColumn(name = "group_id", referencedColumnName = "id")])
         var groups: MutableSet<Groups> = mutableSetOf(),
-
-        @OneToOne
-        @JoinColumn(name = "token_id")
-        var token: Token? = null,
 
         @OneToMany(mappedBy = "userId")
         var trainings: MutableList<Training> = mutableListOf()

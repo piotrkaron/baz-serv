@@ -16,15 +16,13 @@ class Training(
         @Column(name = "ID")
         var id: Long? = null,
 
-        @Column(name = "duration")
-        @field:NotNull
+        @Column(name = "duration", nullable = false)
         var duration: Int? = null,
 
         @Column(name = "file_path", unique = true)
         var filePath: String? = null,
 
-        @Column(name = "date")
-        @field:NotNull
+        @Column(name = "date", columnDefinition = "timestamp default current_timestamp() not null on update current_timestamp()")
         var date: Long? = null,
 
         @OneToOne

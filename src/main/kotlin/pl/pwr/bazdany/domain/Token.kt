@@ -3,6 +3,7 @@ package pl.pwr.bazdany.domain
 import com.fasterxml.jackson.annotation.JsonIgnore
 
 import java.io.Serializable
+import java.time.LocalDateTime
 import javax.persistence.*
 import javax.validation.constraints.NotNull
 
@@ -12,18 +13,22 @@ class Token(
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID")
+    @Column(name = "ID", nullable = false)
     var id: Long? = null,
 
-    @Column(name = "token")
+    @Column(name = "token", nullable = false, unique = true)
     @field:NotNull
     var token: String? = null,
 
-    @Column(name = "date_created")
-    var dateCreated: Long? = null,
+    @Column(name = "date_created",
+            columnDefinition = "timestamp default current_timestamp() not null on update current_timestamp()",
+            nullable = false)
+    var dateCreated: LocalDateTime? = null,
 
-    @Column(name = "expiry_date")
-    var expiryDate: Long? = null,
+    @Column(name = "expiry_date",
+            columnDefinition = "timestamp default current_timestamp()",
+            nullable = false)
+    var expiryDate: LocalDateTime? = null,
 
     @OneToOne
     @JsonIgnore
