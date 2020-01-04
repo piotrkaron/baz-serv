@@ -28,7 +28,8 @@ class Groups(
     var name: String? = null,
 
     @Column(name = "date_created",
-            columnDefinition = "timestamp default current_timestamp() null")
+            columnDefinition = "timestamp default current_timestamp()",
+            nullable = false)
     var dateCreated: LocalDateTime? = null,
 
     @Column(name = "city", nullable = false)

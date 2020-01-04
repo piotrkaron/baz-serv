@@ -1,6 +1,8 @@
 package pl.pwr.bazdany.controller
 
 import com.fasterxml.jackson.annotation.JsonFormat
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.http.HttpStatus
@@ -11,7 +13,9 @@ import pl.pwr.bazdany.domain.User
 import pl.pwr.bazdany.repo.TrainingRepository
 import pl.pwr.bazdany.repo.TypesRepository
 import pl.pwr.bazdany.repo.UserRepository
+import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.LocalTime
 import java.util.*
 
 @RestController
@@ -21,8 +25,30 @@ class TrainingController(
         private val typeRepo: TypesRepository
 ) {
 
+    @GetMapping("/api/trainings/date")
+    fun getAllTrainingsDate(@RequestAttribute("user_id") id: Long,
+                        @RequestBody dateDto: DateRangeDto
+    ): List<TrainingDto> {
+        val start = LocalDateTime.of(dateDto.start, LocalTime.MIN)
+        val end = LocalDateTime.of(dateDto.end, LocalTime.MAX)
+
+        val trainings = trainingRepo.findAllByDateBetweenAndUser_Id(start, end, id)
+
+        return trainings.map(Training::toDto)
+    }
+
+    @GetMapping("/api/trainings/all/{num}")
+    fun getAllTrainings(@RequestAttribute("user_id") id: Long,
+                        @PathVariable("num") pageNum: Int
+    ): List<TrainingDto> {
+        val pageable: Pageable = PageRequest.of(pageNum, 20)
+        val trainings = trainingRepo.findAll(pageable)
+
+        return trainings.content.map(Training::toDto)
+    }
+
     @GetMapping("/api/trainings")
-    fun getTrainings(@RequestAttribute("user_id") id: Long): List<TrainingDto>{
+    fun getTrainings(@RequestAttribute("user_id") id: Long): List<TrainingDto> {
         val trainings = trainingRepo.findAllByUser_Id(id)
 
         return trainings.map(Training::toDto)
@@ -31,7 +57,7 @@ class TrainingController(
     @PostMapping("/api/training")
     @ResponseStatus(HttpStatus.CREATED)
     fun addTraining(@RequestAttribute("user_id") id: Long,
-                    @RequestBody newTraining: NewTrainingDto): UploadResponse{
+                    @RequestBody newTraining: NewTrainingDto): UploadResponse {
 
         val type: Types = typeRepo.findByName(newTraining.type)
                 ?: typeRepo.findByName("undefined")!!
@@ -49,7 +75,7 @@ class TrainingController(
 
     @GetMapping("/api/training/{id}")
     fun getTraining(@RequestAttribute("user_id") id: Long,
-                    @PathVariable(name = "id") trainingId: Long): TrainingDto{
+                    @PathVariable(name = "id") trainingId: Long): TrainingDto {
 
         val training = trainingRepo.findByIdOrNull(trainingId)
                 ?: throw NotFoundException("Training not found")
@@ -104,4 +130,11 @@ fun Training.toDto() = TrainingDto(
 
 fun Types.toDto() = TypeDto(
         name, caloriesPerUnit
+)
+
+data class DateRangeDto(
+        @JsonFormat(pattern = "dd-MM-yyyy")
+        val start: LocalDate,
+        @JsonFormat(pattern = "dd-MM-yyyy")
+        val end: LocalDate
 )
