@@ -105,15 +105,15 @@ fun NewTrainingDto.toDomain(
 )
 
 data class TypeDto(
-        val name: String?,
-        val calories: Double?
+        val name: String,
+        val calories: Double
 )
 
 data class TrainingDto(
         val id: Long,
         val duration: Int,
-        @DateTimeFormat(pattern = "dd-MM-yyy-HH:mm:ss")
-        @JsonFormat(pattern = "dd-MM-yyyy-HH:mm:ss")
+        @DateTimeFormat(pattern = "dd-MM-yyy HH:mm:ss")
+        @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
         val date: LocalDateTime,
         val type: TypeDto,
         val owner: OwnerDto
@@ -129,7 +129,7 @@ fun Training.toDto() = TrainingDto(
 )
 
 fun Types.toDto() = TypeDto(
-        name, caloriesPerUnit
+        name!!, caloriesPerUnit!!
 )
 
 data class DateRangeDto(

@@ -43,7 +43,7 @@ class AuthInterceptor(
 
         if(token.isExpired()) return err(response,"Token expired")
 
-        request.setAttribute("user_id", token.id!!)
+        request.setAttribute("user_id", token.userId!!.id!!)
 
         return true
     }
