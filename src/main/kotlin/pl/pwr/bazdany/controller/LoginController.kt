@@ -1,13 +1,25 @@
 package pl.pwr.bazdany.controller
 
+import com.fasterxml.jackson.annotation.JsonFormat
+import org.hibernate.Session
+import org.hibernate.SessionFactory
+import org.hibernate.boot.Metadata
+import org.hibernate.boot.MetadataSources
+import org.hibernate.boot.SessionFactoryBuilder
+import org.hibernate.boot.registry.StandardServiceRegistryBuilder
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 import pl.pwr.bazdany.BCryptPasswordEncoder
 import pl.pwr.bazdany.domain.Token
+import pl.pwr.bazdany.domain.User
 import pl.pwr.bazdany.repo.TokenRepository
 import pl.pwr.bazdany.repo.UserRepository
+import java.time.LocalDate
+import java.time.LocalDateTime
 import java.util.*
+
 
 @RestController
 class LoginController(
@@ -25,10 +37,6 @@ class LoginController(
         if(encPwd != user.password)
             throw RequestException("Błędne dane")
 
-/*        user.token?.let {
-            tokenRepository.delete(it)
-        }*/
-
         val token = Token(
                 token = UUID.randomUUID().toString(),
                 userId = user
@@ -36,9 +44,13 @@ class LoginController(
 
         tokenRepository.saveAndFlush(token)
 
+        val userDto = user.toDto()
+
         return LoginResponse(
                 userId = user.id!!,
-                token = token.token!!
+                token = token.token!!,
+                expireAt = token!!.expiryDate!!,
+                userDto = userDto
         )
     }
 }
@@ -50,5 +62,27 @@ data class LoginRequest(
 
 data class LoginResponse(
         val userId: Long,
-        val token: String
+        val token: String,
+        @JsonFormat(pattern = "dd-MM-yyyy-HH:mm:ss")
+        val expireAt: LocalDateTime,
+        val userDto: UserDto
+)
+
+data class UserDto(
+        val name: String,
+        val surname: String,
+        val email: String,
+        @JsonFormat(pattern = "dd-MM-yyyy")
+        val birth_day: LocalDate,
+        val weight: Int?,
+        val height: Int?
+)
+
+fun User.toDto() = pl.pwr.bazdany.controller.UserDto(
+        name!!,
+        surname!!,
+        email!!,
+        birthDate!!,
+        weight,
+        height
 )

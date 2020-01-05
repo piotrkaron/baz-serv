@@ -23,7 +23,7 @@ class RegisterController(
 
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
-    fun createUser(@RequestBody request: RegisterRequest){
+    fun createUser(@RequestBody request: RegisterRequest): RegisterResponse{
         val currentUser = userRepo.findByEmail(request.email)
         if(currentUser != null) throw RequestException("Użytkownik już istnieje.")
 
@@ -40,6 +40,8 @@ class RegisterController(
             )
             userRepo.saveAndFlush(user)
             logger.info("Registered user: $name $surname $email")
+
+            return RegisterResponse(true)
         }
     }
 
@@ -55,4 +57,8 @@ data class RegisterRequest(
         val birth_date: LocalDate,
         val weight: Int?,
         val height: Int?
+)
+
+data class RegisterResponse(
+        val registered: Boolean
 )

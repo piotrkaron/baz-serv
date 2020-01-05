@@ -11,26 +11,26 @@ import javax.validation.constraints.NotNull
 @Table(name = "token")
 class Token(
 
-    @Id
+        @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID", nullable = false)
     var id: Long? = null,
 
-    @Column(name = "token", nullable = false, unique = true)
+        @Column(name = "token", nullable = false, unique = true)
     @field:NotNull
     var token: String? = null,
 
-    @Column(name = "date_created",
+        @Column(name = "date_created",
             columnDefinition = "timestamp default current_timestamp() not null on update current_timestamp()",
             nullable = false)
-    var dateCreated: LocalDateTime? = null,
+    var dateCreated: LocalDateTime? = LocalDateTime.now(),
 
-    @Column(name = "expiry_date",
+        @Column(name = "expiry_date",
             columnDefinition = "timestamp default current_timestamp()",
             nullable = false)
-    var expiryDate: LocalDateTime? = null,
+    var expiryDate: LocalDateTime? = LocalDateTime.now().plusDays(10),
 
-    @OneToOne
+        @OneToOne
     @JsonIgnore
     @field:NotNull
     @JoinColumn(name = "user_id", referencedColumnName = "ID")
