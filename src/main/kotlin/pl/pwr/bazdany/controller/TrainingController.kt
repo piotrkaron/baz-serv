@@ -81,7 +81,34 @@ class TrainingController(
                 ?: throw NotFoundException("Training not found")
         return training.toDto()
     }
+
+    @GetMapping("/api/stats")
+    fun getStats(@RequestAttribute("user_id") id: Long,
+                 @RequestBody dateDto: DateRangeDto): List<StatsDto>{
+
+        val start = LocalDateTime.of(dateDto.start, LocalTime.MIN)
+        val end = LocalDateTime.of(dateDto.end, LocalTime.MAX)
+
+        return trainingRepo.findAllByDateBetweenAndUser_Id(start, end, id)
+                .groupBy { it.typeId!!.name!! }
+                .entries
+                .map { it.toDto() }
+    }
 }
+
+fun Map.Entry<String, List<Training>>.toDto() = StatsDto(
+        this.key,
+        this.value.sumBy { it.duration!! },
+        this.value.sumByDouble { it.duration!! * it.typeId!!.caloriesPerUnit!! },
+        this.value.size
+)
+
+data class StatsDto(
+        val name: String,
+        val durationSum: Int,
+        val burntCaloriesSum: Double,
+        val trainingCount: Int
+)
 
 data class UploadResponse(
         val trainingId: Long
