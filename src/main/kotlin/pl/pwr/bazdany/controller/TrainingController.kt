@@ -82,7 +82,7 @@ class TrainingController(
         return training.toDto()
     }
 
-    @GetMapping("/api/stats")
+    @PostMapping("/api/stats")
     fun getStats(@RequestAttribute("user_id") id: Long,
                  @RequestBody dateDto: DateRangeDto): List<StatsDto>{
 
@@ -98,14 +98,18 @@ class TrainingController(
 
 fun Map.Entry<String, List<Training>>.toDto() = StatsDto(
         this.key,
-        this.value.sumBy { it.duration!! },
+        this.value.sumBy { it.duration!! }.toPrettyHours(),
         this.value.sumByDouble { it.duration!! * it.typeId!!.caloriesPerUnit!! },
         this.value.size
 )
 
+fun Int.toPrettyHours(): String{
+    return String.format("%d:%02d:%02d", this / 3600, (this % 3600) / 60, (this % 60))
+}
+
 data class StatsDto(
         val name: String,
-        val durationSum: Int,
+        val durationSum: String,
         val burntCaloriesSum: Double,
         val trainingCount: Int
 )

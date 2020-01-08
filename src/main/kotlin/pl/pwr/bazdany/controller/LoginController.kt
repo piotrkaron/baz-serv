@@ -8,9 +8,7 @@ import org.hibernate.boot.MetadataSources
 import org.hibernate.boot.SessionFactoryBuilder
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder
 import org.springframework.data.repository.findByIdOrNull
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import pl.pwr.bazdany.BCryptPasswordEncoder
 import pl.pwr.bazdany.domain.Token
 import pl.pwr.bazdany.domain.User
@@ -52,6 +50,11 @@ class LoginController(
                 expireAt = token!!.expiryDate!!,
                 userDto = userDto
         )
+    }
+
+    @GetMapping("/api/logout")
+    fun logout(@RequestAttribute("user_id") userId: Long){
+        tokenRepository.deleteAllByUserId(User(userId))
     }
 }
 
