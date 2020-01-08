@@ -1,5 +1,6 @@
 package pl.pwr.bazdany.controller
 
+import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.annotation.JsonProperty
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.web.bind.annotation.*
@@ -16,11 +17,12 @@ class GroupController(
 ) {
 
     @GetMapping("/api/groups")
-    fun getGroups(): List<GroupDto> = groupsRepository.findAll().map(Groups::toDto)
+    fun getGroups(@RequestAttribute("user_id") userId: Long
+    ): List<GroupDto> = groupsRepository.findAll().map{ it.toDto( it.users.find { it.id!! == userId } != null)}
 
     @GetMapping("/api/groups/mine")
     fun getUserGroups(@RequestAttribute("user_id") id: Long): List<GroupDto>
-            = groupsRepository.findAllByUsers_Id(User(id)).map(Groups::toDto)
+            = groupsRepository.findAllByUsers_Id(User(id)).map{ it.toDto( it.users.find { it.id!! == id } != null)}
 
     @PostMapping("/api/group")
     fun createGroup(@RequestAttribute("user_id") userId: Long,
@@ -37,7 +39,7 @@ class GroupController(
 
     @PutMapping("/api/group")
     fun joinGroup(@RequestAttribute("user_id") userId: Long,
-                  @RequestBody join: JoinGroupRequest){
+                  @RequestBody join: JoinGroupRequest): Boolean{
 
         val group = groupsRepository.findByIdOrNull(join.groupId)
                 ?: throw NotFoundException("Grupa nie istnieje")
@@ -47,19 +49,22 @@ class GroupController(
         group.addUsers(user)
 
         groupsRepository.saveAndFlush(group)
+        return true
     }
 }
 
-fun Groups.toDto() = GroupDto(
-        name!!, city!!, dateCreated!!, users.size
+fun Groups.toDto(isUserIn: Boolean) = GroupDto(
+        name!!, city!!, dateCreated!!, users.size, isUserIn, id!!
 )
 
 data class GroupDto(
         val name: String,
         val city: String,
-        @JsonProperty("dd-MM-yyyy-HH:mm:ss")
+        @JsonFormat(pattern = "dd-MM-yyyy")
         val created: LocalDateTime,
-        val membersCount: Int
+        val membersCount: Int,
+        val isUserIn: Boolean,
+        val id: Long
 )
 
 data class CreateGroupRequest(
