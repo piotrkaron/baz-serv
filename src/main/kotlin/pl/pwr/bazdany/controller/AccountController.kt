@@ -11,7 +11,7 @@ import pl.pwr.bazdany.BCryptPasswordEncoder
 import pl.pwr.bazdany.repo.UserRepository
 import java.time.LocalDate
 
-@RestController()
+@RestController
 class AccountController(
         private val userRepo: UserRepository,
         private val encoder: BCryptPasswordEncoder

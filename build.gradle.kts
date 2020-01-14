@@ -48,6 +48,9 @@ dependencies {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
     }
     runtimeOnly ("mysql:mysql-connector-java")
+
+    testImplementation("io.mockk:mockk:1.9")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.4.2")
     testImplementation ("com.google.truth:truth:1.0")
 }
 

@@ -28,6 +28,7 @@ class LoginController(
 
     @PostMapping("/applogin")
     fun login(@RequestBody request: LoginRequest): LoginResponse{
+        val request = request.copy(email = request.email.toLowerCase())
         val user = userRepo.findByEmail(request.email)
         user ?: throw RequestException("Błędne dane")
 
@@ -47,7 +48,7 @@ class LoginController(
         return LoginResponse(
                 userId = user.id!!,
                 token = token.token!!,
-                expireAt = token!!.expiryDate!!,
+                expireAt = token.expiryDate!!,
                 userDto = userDto
         )
     }
